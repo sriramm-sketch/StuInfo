@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StuInfo | Student Performance Prediction System</title>
+  <meta name="description" content="StuInfo - A professional, encouraging educational analytics platform that helps students and educators understand academic trajectories and identify proactive support opportunities.">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23881337' stroke-width='2'><path d='M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z'/><path d='M22 10v6'/><path d='M6 12.5V16a6 3 0 0 0 12 0v-3.5'/></svg>">
+  <style>
+    /* Inline specific header styles for role pills */
+    .role-toggle-group {
+      display: inline-flex;
+      background: #F1F5F9;
+      padding: 3px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-light);
+    }
+    .role-toggle-btn {
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 9999px;
+      transition: all 0.15s ease;
+    }
+    .role-toggle-btn.active-role {
+      background: #FFFFFF;
+      color: var(--primary-700);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Announcement Bar (Demo Notice) -->
+  <div style="background-color: #0F172A; color: #94A3B8; font-size: 0.775rem; padding: 0.4rem 1rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08);">
+    <span>🚀 <strong>Demo Environment:</strong> Predictions are rule-based educational estimates designed for guidance. Real ML integration ready via <code>predictionService.ts</code>.</span>
+  </div>
+
+  <!-- Primary Application Header & Navigation -->
+  <header class="header-nav">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; height: 68px;">
+        
+        <!-- Brand Logo -->
+        <a href="#landing" data-route="landing" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none;">
+          <div style="width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #881337 0%, #9F1239 50%, #BE123C 100%); color: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(136,19,55,0.25);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
+          </div>
+          <div>
+            <div style="font-weight: 800; font-size: 1.25rem; color: var(--text-main); line-height: 1.1; letter-spacing: -0.015em;">StuInfo</div>
+            <div style="font-size: 0.725rem; font-weight: 500; color: var(--text-subtle);">Student Performance System</div>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav style="display: none; align-items: center; gap: 0.5rem;" class="md:flex">
+          <a href="#landing" class="nav-link" data-route="landing">Home</a>
+          <a href="#predict" class="nav-link" data-route="predict">Student Prediction</a>
+          <a href="#educator" class="nav-link" data-route="educator">Educator Dashboard</a>
+          <a href="#history" class="nav-link" data-route="history">Saved Records</a>
+          <a href="#about" class="nav-link" data-route="about">Responsible AI</a>
+        </nav>
+
+        <!-- Right Side: Role Switcher & Action -->
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          
+          <!-- Role Switcher Pill -->
+          <div style="display: none; align-items: center; gap: 0.4rem;" class="md:flex">
+            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-subtle); text-transform: uppercase;">Role:</span>
+            <div class="role-toggle-group">
+              <button id="role-btn-student" class="role-toggle-btn active-role">Student</button>
+              <button id="role-btn-educator" class="role-toggle-btn">Educator</button>
+            </div>
+          </div>
+
+          <!-- Quick Action CTA -->
+          <a href="#predict" data-route="predict" class="btn btn-primary btn-sm" style="display: none;" class="md:inline-flex">
+            Get Prediction
+          </a>
+
+          <!-- Mobile Hamburger Menu Button -->
+          <button id="mobile-menu-toggle" class="btn btn-ghost btn-sm md:hidden" aria-label="Toggle Navigation Menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Mobile Dropdown Menu -->
+      <div id="mobile-menu" style="display: none; padding: 1rem 0; border-top: 1px solid var(--border-light);" class="md:hidden">
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <a href="#landing" class="nav-link" data-route="landing">Home</a>
+          <a href="#predict" class="nav-link" data-route="predict">Student Prediction</a>
+          <a href="#educator" class="nav-link" data-route="educator">Educator Dashboard</a>
+          <a href="#history" class="nav-link" data-route="history">Saved Records</a>
+          <a href="#about" class="nav-link" data-route="about">Responsible AI & Ethics</a>
+          <div style="padding-top: 0.75rem; border-top: 1px solid var(--border-light); margin-top: 0.5rem;">
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-subtle); margin-bottom: 0.4rem;">Select Role:</div>
+            <div class="role-toggle-group">
+              <button class="role-toggle-btn active-role" onclick="document.getElementById('role-btn-student').click()">Student</button>
+              <button class="role-toggle-btn" onclick="document.getElementById('role-btn-educator').click()">Educator</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Dynamic View Container -->
+  <main id="main-content" style="flex: 1 0 auto;"></main>
+
+  <!-- Application Footer -->
+  <footer style="background-color: #FFFFFF; border-top: 1px solid var(--border-light); padding: 3.5rem 0 2rem 0; margin-top: auto;" class="no-print">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 2.5rem;" class="md:grid-cols-4">
+        
+        <!-- Col 1: Mission -->
+        <div style="grid-column: span 2;">
+          <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem;">
+            <div style="width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, #881337 0%, #9F1239 100%); color: #FFFFFF; display: flex; align-items: center; justify-content: center;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/></svg>
+            </div>
+            <strong style="font-size: 1.05rem; color: var(--text-main);">StuInfo &bull; Student Performance System</strong>
+          </div>
+          <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; max-width: 480px;">
+            A compassionate EdTech platform built to empower students and educators with actionable early trajectory insights. Predictions are estimates to guide supportive dialogue—never formal assessments or labels.
+          </p>
+        </div>
+
+        <!-- Col 2: Navigation Links -->
+        <div>
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">Platform</div>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.875rem; color: var(--text-muted);">
+            <a href="#landing" data-route="landing">Overview</a>
+            <a href="#predict" data-route="predict">Student Prediction Form</a>
+            <a href="#educator" data-route="educator">Educator Advisory Dashboard</a>
+            <a href="#history" data-route="history">Saved History & Compare</a>
+          </div>
+        </div>
+
+        <!-- Col 3: Ethical & Legal Links -->
+        <div>
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">Ethics & Privacy</div>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.875rem; color: var(--text-muted);">
+            <a href="#about" data-route="about">Responsible Use Policy</a>
+            <a href="#about" data-route="about">Privacy Safeguards</a>
+            <a href="#about" data-route="about">Educator Guidance Standards</a>
+            <a href="https://groq.com" target="_blank" rel="noopener">Groq AI Inference</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Disclaimer & Copyright -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border-light); font-size: 0.8rem; color: var(--text-subtle);">
+        <div>
+          &copy; 2026 StuInfo &bull; Student Performance Prediction System. Engineered with care for students and educators.
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <span>Zero Persistent Tracking</span>
+          <span>•</span>
+          <span>Deterministic Heuristic Engine v1.2</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Main JavaScript Module -->
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
